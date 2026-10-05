@@ -8,6 +8,7 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 ZSHRC_SOURCE="$SCRIPT_DIR/file.zshrc"
 TMUX_LOCAL_SOURCE="$SCRIPT_DIR/file.tmux.conf.local"
 ZSH_CUSTOM_DIR="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+BANNER_SOURCE="$SCRIPT_DIR/file.login-banner.sh"
 
 require_file() {
   [[ -f "$1" ]] || { printf 'Required file not found: %s\n' "$1" >&2; exit 1; }
@@ -28,6 +29,7 @@ clone_if_missing() {
 
 require_file "$ZSHRC_SOURCE"
 require_file "$TMUX_LOCAL_SOURCE"
+require_file "$BANNER_SOURCE"
 
 sudo apt-get update
 sudo apt-get install -y zsh git curl tmux fonts-powerline bat fzf fd-find tree net-tools
@@ -73,5 +75,14 @@ if ! grep -qxF "$ZSH_PATH" /etc/shells; then
 else
   chsh -s "$ZSH_PATH"
 fi
+
+sudo install -m 0644 "$BANNER_SOURCE" /etc/profile.d/00_lxc-details.sh
+
+sudo mkdir -p /etc/zsh
+
+ZSH_BANNER='[[ -r /etc/profile.d/00_lxc-details.sh ]] && source /etc/profile.d/00_lxc-details.sh'
+
+sudo grep -qxF "$ZSH_BANNER" /etc/zsh/zprofile 2>/dev/null || \
+    echo "$ZSH_BANNER" | sudo tee -a /etc/zsh/zprofile >/dev/null
 
 printf '\nSetup complete. Restart the terminal or run: exec zsh\n'
