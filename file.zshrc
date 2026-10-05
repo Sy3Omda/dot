@@ -164,7 +164,7 @@ alias bat-diff="git diff --name-only --diff-filter=d | xargs bat --diff"
 alias fzf-preview="fzf --preview 'bat --color=always --style=numbers --line-range=:500 {}'"
 
 export FZF_DEFAULT_COMMAND='fd --type f --hidden -E .git -E .cache'
-export FZF_DEFAULT_OPTS="--height 40% --popup bottom,40% --layout reverse --border top \
+export FZF_DEFAULT_OPTS="--height=40% --layout=reverse --border top \
   --color=bg+:#343d46,gutter:-1,pointer:#ff3c3c,info:#0dbc79,hl:#0dbc79,hl+:#23d18b \
   --walker-skip .git,node_modules,target,.Trash,Containers"
 
